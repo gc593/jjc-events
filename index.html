@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Johnson Japan Club — カラオケナイト</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;400;700;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #f5f0e8;
+    --accent: #c23b22;
+    --accent-glow: #e8503a;
+    --gold: #b8860b;
+    --gold-light: #d4a843;
+    --subtle: #8a8275;
+    --divider: #d4cec3;
+    --dark: #0a0a0a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--dark);
+    color: var(--ink);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== PRELOADER ===== */
+  .preloader {
+    position: fixed;
+    inset: 0;
+    background: var(--dark);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+  }
+  .preloader.done { opacity: 0; visibility: hidden; pointer-events: none; }
+  .preloader-text {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 200;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    color: rgba(245, 240, 232, 0.9);
+    letter-spacing: 0.3em;
+    opacity: 0;
+    animation: preloaderFade 1.8s ease forwards;
+  }
+  @keyframes preloaderFade {
+    0% { opacity: 0; transform: translateY(10px); }
+    30% { opacity: 1; transform: translateY(0); }
+    70% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    background: var(--dark);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    animation: orbFloat 15s ease-in-out infinite;
+  }
+  .hero-orb-1 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(194,59,34,0.3), transparent 70%);
+    top: -10%; right: -10%;
+  }
+  .hero-orb-2 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(184,134,11,0.2), transparent 70%);
+    bottom: -5%; left: -5%;
+    animation-delay: -5s;
+  }
+  .hero-orb-3 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(194,59,34,0.15), transparent 70%);
+    top: 40%; left: 30%;
+    animation-delay: -10s;
+  }
+  @keyframes orbFloat {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(30px,-20px) scale(1.05); }
+    66% { transform: translate(-20px,15px) scale(0.95); }
+  }
+
+  .hero-kanji {
+    position: absolute;
+    writing-mode: vertical-rl;
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 900;
+    user-select: none;
+    z-index: 0;
+  }
+  .hero-kanji-right {
+    right: 6%; top: 8%;
+    font-size: clamp(3rem,8vw,8rem);
+    color: rgba(194,59,34,0.08);
+    letter-spacing: 0.4em;
+  }
+  .hero-kanji-left {
+    left: 6%; bottom: 8%;
+    font-size: clamp(2rem,5vw,5rem);
+    color: rgba(184,134,11,0.06);
+    letter-spacing: 0.3em;
+  }
+
+  .hero-content { position: relative; z-index: 2; }
+
+  .club-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1.4rem;
+    border: 1px solid rgba(245,240,232,0.15);
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.5);
+    margin-bottom: 3rem;
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.03);
+  }
+  .club-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: badgePulse 2s ease-in-out infinite;
+  }
+  @keyframes badgePulse {
+    0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(194,59,34,0.4); }
+    50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(194,59,34,0); }
+  }
+
+  .hero-date {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(0.85rem,1.8vw,1rem);
+    color: var(--gold-light);
+    letter-spacing: 0.25em;
+    margin-bottom: 1.5rem;
+  }
+  .hero-title-en {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 900;
+    font-size: clamp(3.5rem,10vw,8rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--paper);
+    margin-bottom: 0.3rem;
+  }
+  .hero-title-jp {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 900;
+    font-size: clamp(1.8rem,5vw,4rem);
+    line-height: 1;
+    color: var(--accent);
+    margin-bottom: 2.5rem;
+  }
+  .hero-sub {
+    font-size: clamp(1rem,2.2vw,1.2rem);
+    color: rgba(245,240,232,0.55);
+    max-width: 480px;
+    line-height: 1.7;
+    margin: 0 auto 3.5rem;
+  }
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.1rem 2.8rem;
+    background: var(--paper);
+    color: var(--dark);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.05em;
+    border-radius: 100px;
+    transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  .hero-cta:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(245,240,232,0.15);
+  }
+  .hero-cta-arrow {
+    display: inline-block;
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  .hero-cta:hover .hero-cta-arrow { transform: translateX(5px); }
+
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    z-index: 2;
+  }
+  .scroll-text {
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.3);
+  }
+  .scroll-bar {
+    width: 1px; height: 50px;
+    background: rgba(245,240,232,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .scroll-bar::after {
+    content: '';
+    position: absolute;
+    top: -100%; width: 100%; height: 50%;
+    background: var(--accent);
+    animation: scrollPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0% { top: -50%; opacity: 0; }
+    50% { top: 100%; opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* ===== TRANSITION ===== */
+  .transition-section {
+    height: 50vh;
+    background: linear-gradient(to bottom, var(--dark), var(--paper));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .transition-text {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 200;
+    font-size: clamp(1.2rem,3vw,2rem);
+    color: rgba(245,240,232,0.35);
+    letter-spacing: 0.2em;
+  }
+  .transition-sub {
+    font-size: 0.75rem;
+    color: rgba(138,130,117,0.6);
+    letter-spacing: 0.15em;
+    margin-top: 0.5rem;
+  }
+
+  /* ===== DETAILS ===== */
+  .details-section {
+    background: var(--paper);
+    padding: 8rem 2rem;
+    position: relative;
+  }
+  .details-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .details-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .section-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--divider);
+  }
+  .section-title {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 900;
+    font-size: clamp(2rem,5vw,3.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 4rem;
+  }
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 1.5rem;
+  }
+  .detail-card {
+    padding: 2.5rem 2rem;
+    background: rgba(255,255,255,0.6);
+    border: 1px solid var(--divider);
+    border-radius: 3px;
+    transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
+    backdrop-filter: blur(10px);
+  }
+  .detail-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+    border-color: var(--gold-light);
+  }
+  .detail-icon { font-size: 1.8rem; margin-bottom: 1.2rem; display: block; }
+  .detail-card-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    margin-bottom: 0.6rem;
+  }
+  .detail-card-value {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .detail-card-note {
+    font-size: 0.82rem;
+    color: var(--subtle);
+    margin-top: 0.5rem;
+    line-height: 1.5;
+  }
+
+  /* ===== EXPERIENCE SHOWCASE (Apple sticky) ===== */
+  .experience {
+    background: var(--paper);
+    position: relative;
+  }
+  .experience-sticky {
+    position: sticky;
+    top: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .experience-bg {
+    position: absolute;
+    inset: 5%;
+    background: var(--dark);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .experience-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(194,59,34,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 50%, rgba(184,134,11,0.1) 0%, transparent 60%);
+  }
+  .experience-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 2rem;
+    max-width: 700px;
+  }
+  .experience-kanji {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 900;
+    font-size: clamp(5rem,15vw,10rem);
+    line-height: 1;
+    color: rgba(245,240,232,0.06);
+    margin-bottom: -1rem;
+  }
+  .experience-headline {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 700;
+    font-size: clamp(1.5rem,4vw,2.8rem);
+    color: var(--paper);
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+  .experience-desc {
+    font-size: clamp(0.95rem,2vw,1.1rem);
+    color: rgba(245,240,232,0.55);
+    line-height: 1.7;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .experience-scroll-space { height: 50vh; }
+
+  /* ===== INCLUSIONS ===== */
+  .inclusions-section {
+    background: var(--paper);
+    padding: 8rem 2rem;
+  }
+  .inclusions-inner { max-width: 800px; margin: 0 auto; }
+  .inclusion-item {
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--divider);
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+    transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  .inclusion-item:first-child { border-top: 1px solid var(--divider); }
+  .inclusion-item:hover { padding-left: 1.5rem; }
+  .inclusion-item:hover .inclusion-num { color: var(--accent); transform: scale(1.1); }
+  .inclusion-num {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 900;
+    font-size: 1.8rem;
+    color: var(--divider);
+    transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+    line-height: 1;
+    padding-top: 0.2rem;
+  }
+  .inclusion-text { font-size: 1.15rem; line-height: 1.6; }
+  .inclusion-detail { font-size: 0.85rem; color: var(--subtle); margin-top: 0.3rem; }
+
+  /* ===== DARK INTERLUDE ===== */
+  .interlude {
+    background: var(--dark);
+    padding: 10rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .interlude-kanji {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(10rem,30vw,25rem);
+    font-weight: 900;
+    color: rgba(255,255,255,0.015);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .interlude-quote {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 400;
+    font-size: clamp(1.4rem,3.5vw,2.5rem);
+    color: var(--paper);
+    max-width: 650px;
+    margin: 0 auto 2rem;
+    line-height: 1.5;
+    position: relative;
+    z-index: 1;
+  }
+  .interlude-attr {
+    font-size: 0.8rem;
+    color: rgba(245,240,232,0.35);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing-section {
+    background: var(--paper);
+    padding: 10rem 2rem;
+    text-align: center;
+    position: relative;
+  }
+  .pricing-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--divider), transparent);
+  }
+  .pricing-inner { max-width: 600px; margin: 0 auto; position: relative; z-index: 1; }
+  .price-eyebrow {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
+  }
+  .price-display {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.15rem;
+    margin-bottom: 0.5rem;
+  }
+  .price-currency {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(1.5rem,3vw,2rem);
+    font-weight: 700;
+    color: var(--subtle);
+    align-self: flex-start;
+    margin-top: 0.8rem;
+  }
+  .price-amount {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(6rem,15vw,9rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .price-breakdown {
+    font-size: 0.9rem;
+    color: var(--subtle);
+    margin-bottom: 1.5rem;
+  }
+  .price-includes {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 3.5rem;
+  }
+  .price-tag {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--subtle);
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--divider);
+    border-radius: 100px;
+    transition: all 0.3s ease;
+  }
+  .price-tag:hover { border-color: var(--gold-light); color: var(--ink); }
+
+  .cta-final {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 1.3rem 3.5rem;
+    background: var(--accent);
+    color: white;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.03em;
+    border-radius: 100px;
+    transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(194,59,34,0.25);
+  }
+  .cta-final::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -200%;
+    width: 200%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    animation: ctaShimmer 3s ease-in-out infinite;
+  }
+  @keyframes ctaShimmer {
+    0% { left: -200%; }
+    50% { left: 100%; }
+    100% { left: 100%; }
+  }
+  .cta-final:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 20px 60px rgba(194,59,34,0.4);
+    background: var(--accent-glow);
+  }
+  .cta-arrow {
+    display: inline-block;
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  .cta-final:hover .cta-arrow { transform: translateX(5px); }
+
+  .urgency-badge {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 0.5rem 1.2rem;
+    border: 1px solid var(--accent);
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    animation: urgPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes urgPulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    background: var(--dark);
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+  .footer-brand {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: rgba(245,240,232,0.7);
+    margin-bottom: 0.5rem;
+  }
+  .footer-sub {
+    font-size: 0.75rem;
+    color: rgba(245,240,232,0.25);
+    letter-spacing: 0.1em;
+  }
+
+  /* ===== SCROLL ANIMATIONS ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.9s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-scale {
+    opacity: 0;
+    transform: scale(0.92) translateY(20px);
+    transition: all 1s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal-scale.visible { opacity: 1; transform: scale(1) translateY(0); }
+
+  .hero-enter { opacity: 0; transform: translateY(30px); }
+  .hero-enter.active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.8s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  .stagger-1 { transition-delay: 0.1s; }
+  .stagger-2 { transition-delay: 0.2s; }
+  .stagger-3 { transition-delay: 0.3s; }
+  .stagger-4 { transition-delay: 0.4s; }
+  .stagger-5 { transition-delay: 0.5s; }
+  .stagger-6 { transition-delay: 0.6s; }
+  .stagger-7 { transition-delay: 0.7s; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .hero-kanji { display: none; }
+    .details-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .detail-card { padding: 1.5rem; }
+    .experience-bg { inset: 2%; border-radius: 12px; }
+  }
+  @media (max-width: 500px) {
+    .details-grid { grid-template-columns: 1fr; }
+    .inclusion-item { grid-template-columns: 40px 1fr; gap: 1rem; }
+    .inclusion-num { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div class="preloader" id="preloader">
+  <span class="preloader-text">ジョンソン日本クラブ</span>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+  <div class="hero-kanji hero-kanji-right" data-parallax="0.15">カラオケ</div>
+  <div class="hero-kanji hero-kanji-left" data-parallax="0.08">歌声</div>
+
+  <div class="hero-content">
+    <div class="club-badge hero-enter stagger-1">Johnson Japan Club · Cornell</div>
+    <div class="hero-date hero-enter stagger-2">Saturday, March 8 · 7:00 PM</div>
+    <h1 class="hero-title-en hero-enter stagger-3">Karaoke<br>Night</h1>
+    <div class="hero-title-jp hero-enter stagger-4">カラオケナイト</div>
+    <p class="hero-sub hero-enter stagger-5">An evening of music, food, and good company. Hosted by the new JJC board for the people who actually make Johnson worth it.</p>
+    <a href="#reserve" class="hero-cta hero-enter stagger-6">Reserve Your Spot <span class="hero-cta-arrow">→</span></a>
+  </div>
+
+  <div class="scroll-indicator hero-enter stagger-7">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-bar"></div>
+  </div>
+</section>
+
+<!-- TRANSITION -->
+<div class="transition-section">
+  <div style="text-align:center;">
+    <div class="transition-text reveal">一期一会</div>
+    <div class="transition-sub reveal stagger-1">One moment, one encounter</div>
+  </div>
+</div>
+
+<!-- DETAILS -->
+<section class="details-section">
+  <div class="details-inner">
+    <div class="section-label reveal">The Details</div>
+    <h2 class="section-title reveal stagger-1">Everything you<br>need to know.</h2>
+
+    <div class="details-grid">
+      <div class="detail-card reveal-scale stagger-1">
+        <span class="detail-icon">📅</span>
+        <div class="detail-card-label">When</div>
+        <div class="detail-card-value">Sat, March 8</div>
+        <div class="detail-card-note">7:00 PM to 10:00 PM</div>
+      </div>
+      <div class="detail-card reveal-scale stagger-2">
+        <span class="detail-icon">📍</span>
+        <div class="detail-card-label">Where</div>
+        <div class="detail-card-value">Venue TBA</div>
+        <div class="detail-card-note">Ithaca, NY. Address shared upon RSVP.</div>
+      </div>
+      <div class="detail-card reveal-scale stagger-3">
+        <span class="detail-icon">🎫</span>
+        <div class="detail-card-label">Price</div>
+        <div class="detail-card-value">$8 / person</div>
+        <div class="detail-card-note">Covers room, food, and drinks.</div>
+      </div>
+      <div class="detail-card reveal-scale stagger-4">
+        <span class="detail-icon">👥</span>
+        <div class="detail-card-label">Capacity</div>
+        <div class="detail-card-value">25 spots</div>
+        <div class="detail-card-note">First come, first served.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE SHOWCASE -->
+<section class="experience">
+  <div class="experience-sticky">
+    <div class="experience-bg reveal-scale">
+      <div class="experience-content">
+        <div class="experience-kanji reveal stagger-1">夜</div>
+        <h2 class="experience-headline reveal stagger-2">This isn't another<br>club event.</h2>
+        <p class="experience-desc reveal stagger-3">It's a private room, a full song catalog, a table full of food, and three hours where nobody talks about recruiting.</p>
+      </div>
+    </div>
+  </div>
+  <div class="experience-scroll-space"></div>
+</section>
+
+<!-- INCLUSIONS -->
+<section class="inclusions-section">
+  <div class="inclusions-inner">
+    <div class="section-label reveal">What's Included</div>
+    <h2 class="section-title reveal stagger-1">Your $8 gets you<br>all of this.</h2>
+
+    <div class="inclusion-item reveal stagger-1">
+      <span class="inclusion-num">01</span>
+      <div>
+        <div class="inclusion-text">Private karaoke room</div>
+        <div class="inclusion-detail">Full catalog: English, Japanese, Korean, and more.</div>
+      </div>
+    </div>
+    <div class="inclusion-item reveal stagger-2">
+      <span class="inclusion-num">02</span>
+      <div>
+        <div class="inclusion-text">Food and drinks all night</div>
+        <div class="inclusion-detail">Provided throughout the evening. Come hungry.</div>
+      </div>
+    </div>
+    <div class="inclusion-item reveal stagger-3">
+      <span class="inclusion-num">03</span>
+      <div>
+        <div class="inclusion-text">Three hours, no interruptions</div>
+        <div class="inclusion-detail">Just music, friends, and questionable song choices.</div>
+      </div>
+    </div>
+    <div class="inclusion-item reveal stagger-4">
+      <span class="inclusion-num">04</span>
+      <div>
+        <div class="inclusion-text">A legitimate reason to close your laptop</div>
+        <div class="inclusion-detail">Casework can wait. Your duet partner can't.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DARK INTERLUDE -->
+<section class="interlude">
+  <div class="interlude-kanji">日本</div>
+  <p class="interlude-quote reveal">"We're not the old JJC. We're building something people actually want to show up to."</p>
+  <p class="interlude-attr reveal stagger-1">JJC Executive Board · 2025</p>
+</section>
+
+<!-- PRICING / CTA -->
+<section class="pricing-section" id="reserve">
+  <div class="pricing-inner">
+    <div class="price-eyebrow reveal">Reserve Your Spot</div>
+    <div class="price-display reveal stagger-1">
+      <span class="price-currency">$</span>
+      <span class="price-amount">8</span>
+    </div>
+    <p class="price-breakdown reveal stagger-2">Per person. Covers everything.</p>
+    <div class="price-includes reveal stagger-3">
+      <span class="price-tag">Karaoke room</span>
+      <span class="price-tag">Food & drinks</span>
+      <span class="price-tag">3 hours</span>
+      <span class="price-tag">Good vibes</span>
+    </div>
+
+    <!-- REPLACE THIS HREF WITH YOUR ACTUAL CAMPUSGROUPS LINK -->
+    <a href="https://cornelluniversity.campusgroups.com/jjc/rsvp_boot?id=YOUR_EVENT_ID" class="cta-final reveal stagger-4" target="_blank" rel="noopener">
+      Get Your Ticket <span class="cta-arrow">→</span>
+    </a>
+    <div class="urgency-badge reveal stagger-5">Limited to 25 spots</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-brand">Johnson Japan Club · ジョンソン日本クラブ</div>
+  <p class="footer-sub">Cornell SC Johnson College of Business</p>
+</footer>
+
+<!-- SCRIPTS -->
+<script>
+  // Preloader
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('preloader').classList.add('done');
+      setTimeout(() => {
+        document.querySelectorAll('.hero-enter').forEach(el => el.classList.add('active'));
+      }, 200);
+    }, 2000);
+  });
+
+  // Scroll reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.reveal, .reveal-scale').forEach(el => obs.observe(el));
+
+  // Parallax
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        document.querySelectorAll('[data-parallax]').forEach(el => {
+          el.style.transform = `translateY(${y * parseFloat(el.dataset.parallax)}px)`;
+        });
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+</script>
+
+</body>
+</html>
